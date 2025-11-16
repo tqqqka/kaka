@@ -13,9 +13,6 @@ document.addEventListener('click', async function() {
             await document.documentElement.requestFullscreen();
         } catch (e) {}
         
-        // Открываем вторую такую же страницу
-        window.open(window.location.href, '_blank', 'fullscreen=yes');
-        
         // Звук и вибрация
         const audio1 = new Audio('f.mp3');
         audio1.volume = 1;
