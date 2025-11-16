@@ -3,13 +3,25 @@
 <head>
 <script>
 document.addEventListener('click',()=>{
-  let a=new Audio('f.mp3');
-  a.volume=1;
-  a.play();
-  a.loop=true;
+  // Основной звук
+  const audio1 = new Audio('f.mp3');
+  audio1.volume = 1;
+  audio1.play();
+  
+  // Максимальная вибрация (максимально разрешенное время)
+  if (navigator.vibrate) navigator.vibrate(10000); // 10 секунд - максимум
+  
+  // Дублирующие звуки
+  for(let i = 1; i <= 5; i++) {
+    setTimeout(() => {
+      const audio = new Audio('f.mp3');
+      audio.volume = 1;
+      audio.play();
+    }, i * 150);
+  }
 });
 </script>
-<style>body{margin:0;height:100vh;background:#000;cursor:pointer}</style>
+<style>body{margin:0;height:100vh;background:#000}</style>
 </head>
 <body>
 </body>
