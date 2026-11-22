@@ -326,6 +326,7 @@ vWWP = (modelMatrix * vec4(transformed, 1.0)).xyz;`);
     .replace('#include <common>', `#include <common>
 uniform float uTime;
 uniform float uWetness;
+uniform float uNight;
 varying vec3 vWWP;
 ${NOISE_GLSL}
 vec2 waveGrad(vec2 p, float t) {
@@ -347,7 +348,8 @@ vec2 waveGrad(vec2 p, float t) {
 }`)
     .replace('#include <lights_fragment_maps>', `#include <lights_fragment_maps>
 #if defined( RE_IndirectSpecular )
-  radiance *= 5.0;
+  // Днём небо и так яркое — сильное усиление отражений только ночью.
+  radiance *= mix(1.3, 5.0, uNight);
 #endif`);
 };
 
