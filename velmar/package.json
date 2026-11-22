@@ -1,0 +1,33 @@
+{
+  "name": "velmar-night-tide",
+  "version": "1.0.0",
+  "description": "VELMAR: Ночной прилив — мобильная 3D open-world игра (Three.js + Rapier + Capacitor)",
+  "scripts": {
+    "dev": "vite --host",
+    "build": "tsc --noEmit && vite build",
+    "build:single": "vite build --mode single",
+    "preview": "vite preview --host",
+    "cap:sync": "npm run build && npx cap sync android",
+    "android:debug": "npm run cap:sync && cd android && ./gradlew assembleDebug",
+    "android:release": "npm run cap:sync && cd android && ./gradlew bundleRelease",
+    "typecheck": "tsc --noEmit"
+  },
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@capacitor/core": "^8.6.2",
+    "@capacitor/preferences": "^8.0.1",
+    "@dimforge/rapier3d-compat": "^0.21.0",
+    "three": "^0.187.0"
+  },
+  "devDependencies": {
+    "@capacitor/android": "^8.6.2",
+    "@capacitor/cli": "^8.6.2",
+    "@types/three": "^0.187.0",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.8",
+    "vite-plugin-singlefile": "^2.3.4"
+  },
+  "type": "module",
+  "private": true
+}
