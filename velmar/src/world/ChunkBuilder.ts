@@ -65,6 +65,8 @@ const TEMPLATES = (() => {
 })();
 
 export class ChunkBuilder {
+  /** Упрощённая генерация для слабых устройств (меньше деревьев и деталей). */
+  lowDetail = false;
   constructor(private layout: CityLayout, private graph: RoadGraph, private terrain: Terrain) {}
 
   // =========================================================================
@@ -106,7 +108,7 @@ export class ChunkBuilder {
     this.streetProps(def, data, rng);
     for (const b of def.blocks) this.blockProps(b, data, rng);
     this.portProps(def, data, rng);
-    for (const t of def.trees) this.tree(data, t.x, t.y, t.z, t.s, t.kind, t.rot);
+    for (const [i, t] of def.trees.entries()) if (!this.lowDetail || i % 2 === 0) this.tree(data, t.x, t.y, t.z, t.s, t.kind, t.rot);
     this.placeSigns(def, data);
     return data;
   }
@@ -119,7 +121,7 @@ export class ChunkBuilder {
       gb.setAttr(t.style, t.cellW, t.cellH, p.seed + ti * 7);
       if (t.kind === 'box') {
         gb.box(t.cx, t.y0, t.cz, t.w, t.h, t.d, t.rot);
-        this.ledges(gb, t, p, rng);
+        if (!this.lowDetail) this.ledges(gb, t, p, rng);
       } else {
         gb.prism(t.cx, t.y0, t.cz, t.r, t.sides, t.h, t.rot, true, t.taper);
         if (t.h > 30 && t.style !== 4) {
@@ -461,7 +463,7 @@ export class ChunkBuilder {
   // --- Пропсы кварталов -------------------------------------------------------
   private blockProps(b: Block, d: ChunkData, rng: RNG) {
     // Деревья вдоль тротуаров.
-    const along = b.district === 'residential' || b.district === 'downtown' || b.district === 'beach' || b.district === 'plaza' || b.district === 'park';
+    const along = !this.lowDetail && (b.district === 'residential' || b.district === 'downtown' || b.district === 'beach' || b.district === 'plaza' || b.district === 'park');
     if (along) {
       const kind = b.district === 'beach' ? 'palm' : 'oak';
       const inset = 1.6;

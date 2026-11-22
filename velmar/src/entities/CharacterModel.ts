@@ -90,7 +90,14 @@ function buildBase(opts: { cap: boolean; jacket: boolean; sleeves: boolean }): T
   // Шея и голова.
   add(capsuleBetween(new THREE.Vector3(0, 1.46, 0), new THREE.Vector3(0, 1.56, 0), 0.055), B.neck, 0);
   add(sphereAt(0, 1.64, 0.005, 0.105, 0.125, 0.115, 12, 10), B.head, 0);
-  add(sphereAt(0, 1.67, -0.008, 0.112, 0.105, 0.122, 12, 6, Math.PI * 0.55), B.head, 4); // волосы
+  // Волосы: шапка сверху и затылок.
+  add(sphereAt(0, 1.67, -0.008, 0.112, 0.105, 0.122, 12, 6, Math.PI * 0.55), B.head, 4);
+  {
+    const back = sphereAt(0, 0, 0, 0.114, 0.118, 0.118, 12, 6, Math.PI * 0.5);
+    back.rotateX(-Math.PI * 0.42);
+    back.translate(0, 1.645, -0.012);
+    add(back, B.head, 4);
+  }
   add(boxAt(0.038, 1.655, 0.105, 0.025, 0.014, 0.012), B.head, 5); // глаза
   add(boxAt(-0.038, 1.655, 0.105, 0.025, 0.014, 0.012), B.head, 5);
   add(boxAt(0, 1.625, 0.118, 0.022, 0.04, 0.025), B.head, 0); // нос

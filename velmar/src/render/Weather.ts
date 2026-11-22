@@ -10,7 +10,7 @@ import type { Game } from '../game/Game';
 
 export type WeatherKind = 'clear' | 'cloudy' | 'rain' | 'storm' | 'fog';
 
-const BOX = new THREE.Vector3(46, 26, 46);
+const BOX = new THREE.Vector3(26, 16, 26);
 
 export class Weather {
   kind: WeatherKind = 'clear';
@@ -29,7 +29,7 @@ export class Weather {
   timeInState = 0;
 
   constructor(private game: Game, count: number) {
-    const plane = new THREE.PlaneGeometry(0.018, 0.75);
+    const plane = new THREE.PlaneGeometry(0.012, 0.8);
     plane.translate(0, -0.37, 0);
     // Инстансинг без матриц: позиция капли считается в шейдере из сида.
     this.geo = new THREE.InstancedBufferGeometry();
@@ -50,9 +50,14 @@ export class Weather {
           // Штрих ориентирован по скорости, повёрнут к камере.
           vec3 vel = normalize(vec3(uWind.x * 0.06, -1.0, uWind.y * 0.06));
           vec3 toCam = normalize(uCam - p);
-          vec3 side = normalize(cross(vel, toCam));
-          vec3 wp = p + side * position.x + vel * -position.y * (1.0 + aSeed.w);
-          vA = step(aSeed.w, uAmount) * 0.55;
+          // Горизонтальный перпендикуляр к взгляду (без cross: устойчиво на всех GPU).
+          vec2 sd = vec2(toCam.z, -toCam.x);
+          float sl = length(sd);
+          vec3 side = sl > 0.001 ? vec3(sd.x / sl, 0.0, sd.y / sl) : vec3(1.0, 0.0, 0.0);
+          float dist = length(uCam - p);
+          // Ширина растёт с расстоянием: капля не становится тоньше пикселя.
+          vec3 wp = p + side * position.x * (1.0 + dist * 0.12) + vel * -position.y * (1.0 + aSeed.w);
+          vA = step(aSeed.w, uAmount) * 0.22 * smoothstep(0.8, 5.0, length(uCam - p));
           gl_Position = projectionMatrix * viewMatrix * vec4(wp, 1.0);
         }`,
       fragmentShader: /* glsl */ `
@@ -125,7 +130,7 @@ export class Weather {
     this.mat.uniforms.uAmount.value = this.rain;
     this.mesh.visible = this.rain > 0.02 && !(cam.y > 300);
     const night = g.engine.sky.night;
-    (this.mat.uniforms.uColor.value as THREE.Color).setRGB(0.6 - night * 0.35, 0.65 - night * 0.35, 0.75 - night * 0.35);
+    (this.mat.uniforms.uColor.value as THREE.Color).setRGB(0.78 - night * 0.28, 0.82 - night * 0.26, 0.9 - night * 0.22);
     g.audio.setRain(this.rain);
   }
 }

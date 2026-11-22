@@ -55,7 +55,10 @@ export class Input {
     window.addEventListener('blur', () => { this.keys.clear(); this.held.clear(); });
     canvas.addEventListener('mousedown', (e) => {
       if (this.lastDevice === 'touch') return;
-      if (!this.pointerLocked && this.enabled) canvas.requestPointerLock?.();
+      if (!this.pointerLocked && this.enabled) {
+        // Pointer Lock необязателен (в некоторых окнах запрещён) — отказ просто игнорируем.
+        try { const r = canvas.requestPointerLock?.() as unknown as Promise<void> | undefined; r?.catch?.(() => {}); } catch { /* недоступно */ }
+      }
       if (e.button === 0) this.press('fire');
       if (e.button === 2) this.press('aim');
     });

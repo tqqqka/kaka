@@ -206,7 +206,7 @@ async function boot() {
     game.hud.setVisible(false);
     touch.show(false);
     ui.showMain();
-    if (game.hours > 6 && game.hours < 19) game.hours = 20.6;
+    if (game.hours > 5 && game.hours < 22) game.hours = 22.7;
   };
   game.frameHooks.push((dt) => {
     if (game.state !== 'menu') return;

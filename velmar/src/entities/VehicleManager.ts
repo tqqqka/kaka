@@ -78,10 +78,15 @@ export class VehicleManager {
     let bi = 0;
     const night = this.game.engine.sky.night > 0.45;
     const cam = this.game.engine.camera.position;
+    const shadowR = this.game.engine.preset.name === 'low' ? 30 : this.game.engine.preset.name === 'medium' ? 70 : 120;
     for (const v of this.list) {
       v.update(dt);
       const p = v.position(this._v);
-      if (p.distanceToSquared(cam) < 250 * 250) {
+      const d2 = p.distanceToSquared(cam);
+      // Дальние машины не рисуются (кроме вертолётов — их видно издалека).
+      v.root.visible = d2 < 230 * 230 || v.spec.type === 'heli' || v.playerDriving;
+      v.bodyMesh.castShadow = d2 < shadowR * shadowR;
+      if (v.root.visible && d2 < 230 * 230) {
         if (wi + 4 <= MAX_WHEELS) wi += v.writeWheels(this.wheels, wi);
         if (night && v.headlights && bi < MAX_BEAMS && v.spec.type !== 'heli' && v.spec.type !== 'boat') {
           // Пятно перед машиной, вытянутое вперёд.

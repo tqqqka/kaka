@@ -36,8 +36,11 @@ export class PostFX {
     const composer = new EffectComposer(this.renderer, rt);
     composer.addPass(new RenderPass(this.scene, this.camera));
     if (preset.ao) {
-      const gtao = new GTAOPass(this.scene, this.camera, width, height);
+      const gtao = new GTAOPass(this.scene, this.camera, Math.round(width / 2), Math.round(height / 2));
       gtao.output = GTAOPass.OUTPUT.Default;
+      // AO в половинном разрешении: нормали/глубина и сам GTAO в 4 раза дешевле.
+      const setSize = gtao.setSize.bind(gtao);
+      gtao.setSize = (w: number, h: number) => setSize(Math.max(1, Math.round(w / 2)), Math.max(1, Math.round(h / 2)));
       gtao.blendIntensity = 0.85;
       gtao.updateGtaoMaterial({ radius: 1.6, distanceExponent: 1.4, thickness: 2.0, scale: 1.0, samples: 12 });
       gtao.updatePdMaterial({ lumaPhi: 10, depthPhi: 2, normalPhi: 3, radius: 6, rings: 2, samples: 12 });

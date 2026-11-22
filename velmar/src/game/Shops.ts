@@ -104,7 +104,7 @@ export class Shops implements GameModule {
     } else if (id === 'garage') {
       const items: ShopItem[] = [
         { label: 'Сохранить игру', sub: 'Прогресс, деньги, оружие', price: 0, action: () => { this.onSave?.(); ui.closeModal(); } },
-        { label: 'Пропустить время', sub: 'Сон до утра (6:00) / вечера (20:00)', price: 0, action: () => { g.hours = g.hours > 6 && g.hours < 20 ? 20 : 6; g.hud.toast('Время идёт...'); ui.closeModal(); } },
+        { label: 'Пропустить время', sub: 'Сон до утра (6:00) / вечера (21:00)', price: 0, action: () => { g.hours = g.hours > 6 && g.hours < 20 ? 21 : 6; g.hud.toast('Время идёт...'); ui.closeModal(); } },
       ];
       const v = this.lastCar();
       if (v && !v.destroyed) {

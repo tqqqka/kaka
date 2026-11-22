@@ -36,19 +36,19 @@ export const PRESETS: Record<QualityName, QualityPreset> = {
   low: {
     name: 'low', pixelRatioMax: 1.0, shadows: true, shadowMapSize: 1024, cascades: 1, shadowFar: 70,
     postFX: false, bloom: false, ao: false, msaa: 0, fxaa: false,
-    detailDistance: 260, farDistance: 900, pedCount: 14, trafficCount: 12, rainCount: 1500,
+    detailDistance: 220, farDistance: 850, pedCount: 12, trafficCount: 10, rainCount: 1500,
     envInterval: 8, headlightSpot: false, propShadows: false,
   },
   medium: {
-    name: 'medium', pixelRatioMax: 1.5, shadows: true, shadowMapSize: 1024, cascades: 2, shadowFar: 180,
+    name: 'medium', pixelRatioMax: 1.5, shadows: true, shadowMapSize: 1024, cascades: 2, shadowFar: 140,
     postFX: true, bloom: true, ao: false, msaa: 0, fxaa: true,
-    detailDistance: 360, farDistance: 1400, pedCount: 24, trafficCount: 18, rainCount: 3500,
+    detailDistance: 300, farDistance: 1300, pedCount: 22, trafficCount: 16, rainCount: 3500,
     envInterval: 4, headlightSpot: true, propShadows: false,
   },
   high: {
-    name: 'high', pixelRatioMax: 2.0, shadows: true, shadowMapSize: 2048, cascades: 3, shadowFar: 380,
+    name: 'high', pixelRatioMax: 2.0, shadows: true, shadowMapSize: 2048, cascades: 3, shadowFar: 300,
     postFX: true, bloom: true, ao: true, msaa: 4, fxaa: false,
-    detailDistance: 520, farDistance: 2200, pedCount: 36, trafficCount: 26, rainCount: 7000,
+    detailDistance: 460, farDistance: 2200, pedCount: 34, trafficCount: 24, rainCount: 7000,
     envInterval: 2, headlightSpot: true, propShadows: true,
   },
 };

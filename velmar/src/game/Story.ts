@@ -291,7 +291,7 @@ export function storyMissions(L: CityLayout): MissionDef[] {
           { who: 'lev', text: 'Откуда ты знаешь про бумаги, Гена? Я тебе о них не говорил.' },
           { who: 'sedoy', text: '...Город маленький. Приезжай один.' },
         ], { phone: true }),
-        S.run((r) => { if (r.game.hours > 5 && r.game.hours < 20) r.game.hours = 21; }),
+        S.run((r) => { if (r.game.hours > 5 && r.game.hours < 21) r.game.hours = 22; }),
         S.goTo(P('construction'), { r: 5, text: 'Приезжайте на <b>стройку «Горизонт»</b>' }),
         S.run((r) => {
           const spots = [[cx - 14, cz - 10], [cx + 14, cz - 10], [cx - 12, cz + 12], [cx + 12, cz + 12], [cx, cz - 14], [cx + 18, cz], [cx - 18, cz + 2], [cx, cz + 15]];

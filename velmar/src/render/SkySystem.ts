@@ -210,19 +210,20 @@ export class SkySystem {
   update(hours: number, dt: number, preset: QualityPreset) {
     const w = this.weather;
     // --- Солнце ---
-    const dayT = (hours - 6) / 12; // 0 — восход, 1 — закат
+    // Длинный летний день: восход 5:30, закат 20:30.
+    const dayT = (hours - 5.5) / 15; // 0 — восход, 1 — закат
     const az = dayT * Math.PI;
     const el = Math.sin(dayT * Math.PI) * THREE.MathUtils.degToRad(68);
     this.sunDir.set(Math.cos(az) * Math.cos(el), Math.sin(el), 0.45 * Math.cos(el)).normalize();
     this.sunHeight = this.sunDir.y;
     // --- Луна (ночью идёт по противоположной стороне) ---
-    let nightT = (hours - 18) / 12;
-    if (nightT < 0) nightT += 2;
+    let nightT = (hours - 20.5) / 9;
+    if (nightT < 0) nightT += 24 / 9;
     const mel = Math.sin(clamp(nightT, 0, 1) * Math.PI) * THREE.MathUtils.degToRad(55) + 0.05;
     const maz = nightT * Math.PI;
     this.moonDir.set(Math.cos(maz) * Math.cos(mel), Math.sin(mel), -0.35 * Math.cos(mel)).normalize();
 
-    const sunUp = smoothstep(-0.12, 0.08, this.sunHeight);
+    const sunUp = smoothstep(-0.16, 0.1, this.sunHeight);
     this.night = 1 - sunUp;
     SharedUniforms.uNight.value = smoothstep(0.25, 0.85, this.night);
 
@@ -286,9 +287,10 @@ export class SkySystem {
 
     // --- Рассеянный свет ---
     const dayK = sunUp;
-    this.hemi.color.setRGB(lerp(0.12, 0.62, dayK), lerp(0.16, 0.74, dayK), lerp(0.3, 1.0, dayK));
-    this.hemi.groundColor.setRGB(lerp(0.08, 0.36, dayK), lerp(0.06, 0.3, dayK), lerp(0.06, 0.24, dayK));
-    this.hemi.intensity = lerp(0.35, 0.55, dayK) * (1 + w.rain * 0.3) + w.lightning * 2;
+    // Ночью город подсвечен огнями: тёплый «грунт» и синеватое небо.
+    this.hemi.color.setRGB(lerp(0.26, 0.62, dayK), lerp(0.3, 0.74, dayK), lerp(0.48, 1.0, dayK));
+    this.hemi.groundColor.setRGB(lerp(0.3, 0.36, dayK), lerp(0.22, 0.3, dayK), lerp(0.16, 0.24, dayK));
+    this.hemi.intensity = lerp(0.75, 0.55, dayK) * (1 + w.rain * 0.3) + w.lightning * 2;
     // Небо Preetham в линейных единицах ~5–20, поэтому окружение нормируется,
     // чтобы соотношение солнце : небо было близко к реальному (~3:1).
     this.scene.environmentIntensity = 0.13 * (1 - 0.3 * w.rain) + w.lightning * 0.3;
@@ -309,7 +311,7 @@ export class SkySystem {
     SharedUniforms.uFogHeight.value = lerp(0.012, 0.006, w.rain);
 
     // Экспозиция: ночью чуть выше, чтобы читались тёмные улицы.
-    this.exposure = lerp(1.05, 0.62, dayK) * (1 + w.rain * 0.15);
+    this.exposure = lerp(1.12, 0.62, dayK) * (1 + w.rain * 0.15);
 
     // --- Карта окружения (дорогой шаг, делается редко) ---
     this.envTimer += dt;

@@ -187,12 +187,20 @@ export class Game {
     if (!this.skipRender) this.input.endFrame();
   }
 
+  /** Обновление NPC: дальние не рендерятся и не анимируются, тени — только у ближних. */
   private updateCharacters(dt: number) {
+    const cam = this.engine.camera.position;
+    const shadowR = this.engine.preset.name === 'low' ? 0 : this.engine.preset.name === 'medium' ? 35 : 60;
     for (const c of this.characters) {
       if (c === this.player.char) continue;
       if (!c.alive) c.deadTime += dt;
+      const d2 = c.pos.distanceToSquared(cam);
+      const far = d2 > 95 * 95;
+      if (far) { c.object.visible = false; continue; }
+      c.model.mesh.castShadow = d2 < shadowR * shadowR;
       c.sync(dt);
     }
+    this.player.char.model.mesh.castShadow = this.engine.preset.name !== 'low' || !this.player.vehicle;
   }
 
   /** Машины сбивают пешеходов и игрока. */

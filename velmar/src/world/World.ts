@@ -35,6 +35,8 @@ export class World {
   private chunks: Chunk[] = [];
   private detailDistance = 360;
   private propShadows = false;
+  private shadowFar = 180;
+  private lowDetail = false;
 
   readonly facadeMat: THREE.MeshStandardMaterial;
   readonly foliageMat: THREE.MeshStandardMaterial;
@@ -87,6 +89,9 @@ export class World {
   applyPreset(p: QualityPreset) {
     this.detailDistance = p.detailDistance;
     this.propShadows = p.propShadows;
+    this.shadowFar = p.shadowFar;
+    this.lowDetail = p.name === 'low';
+    this.builder.lowDetail = this.lowDetail;
     for (const c of this.chunks) if (c.lod0) this.setChunkShadows(c);
   }
 
@@ -265,7 +270,12 @@ export class World {
       c.dist = Math.hypot(dx, dz, camH * 0.5);
       if (c.lod0) {
         if (c.dist > this.detailDistance + 90) this.unloadChunk(c);
-        else loaded++;
+        else {
+          loaded++;
+          // В карты теней рисуем только ближние чанки.
+          const castFar = c.dist < this.shadowFar + 60;
+          for (const m of c.lod0.children) if (m.name === 'facade') (m as THREE.Mesh).castShadow = castFar;
+        }
       } else if (c.dist < this.detailDistance && (!best || c.dist < best.dist)) best = c;
       if (c.lod1 && c.lod1.visible) lod1++;
     }

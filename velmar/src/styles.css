@@ -1,5 +1,6 @@
 /* Базовые стили; UI-компоненты дописываются в ui/*.css-in-ts */
 :root {
+  color-scheme: dark;
   --bg: #07080c;
   --fg: #f3efe6;
   --accent: #ffb13b;

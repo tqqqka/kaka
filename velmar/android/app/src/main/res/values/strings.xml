@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">VELMAR</string>
+    <string name="title_activity_main">VELMAR</string>
+    <string name="package_name">com.velmar.nighttide</string>
+    <string name="custom_url_scheme">com.velmar.nighttide</string>
+</resources>
